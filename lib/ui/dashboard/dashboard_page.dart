@@ -1,8 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutterprojectsetup/di/api_interface.dart';
+import 'package:flutterprojectsetup/models/song_data.dart';
+import 'package:flutterprojectsetup/models/song_details.dart';
 import 'package:flutterprojectsetup/ui/common/app_theme.dart';
 import 'package:flutterprojectsetup/ui/common/bloc_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutterprojectsetup/ui/common/shimmer_widget.dart';
+import 'package:flutterprojectsetup/ui/common/strings.dart';
+import 'package:flutterprojectsetup/ui/song_details/song_details_page.dart';
+
+import 'carousel_slider_item.dart';
 
 class DashBoardPage extends StatefulWidget {
   @override
@@ -13,6 +23,15 @@ class DashBoardPage extends StatefulWidget {
 
 class _DashBoardPageState extends State<DashBoardPage> {
   AppTheme _appTheme;
+  StreamController<SongData> _fetchSongDataStreamController =
+      StreamController();
+  SongData _songData;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSongList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,28 +41,37 @@ class _DashBoardPageState extends State<DashBoardPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Music Library",
+          Strings.appBarTitle,
           style: _appTheme.appBarTextStyle,
         ),
         backgroundColor: _appTheme.primaryColor,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          _getTitleAndAuthors(),
-          _getSongs(),
-          _getCopyRightsText(),
-          SizedBox(height: _appTheme.getResponsiveHeight(100),),
-        ],
-      ),
+      body: StreamBuilder<SongData>(
+          stream: _fetchSongDataStreamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              _songData = snapshot.data;
+            }
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _getTitleAndAuthors(),
+                _getSongs(),
+                _getCopyRightsText(),
+                SizedBox(
+                  height: _appTheme.getResponsiveHeight(100),
+                ),
+              ],
+            );
+          }),
     );
   }
 
   Widget _getSongs() {
     return CarouselSlider.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: 100,
+      itemCount: _songData != null ? _songData?.feed?.results?.length : 10,
       enableInfiniteScroll: true,
       autoPlay: false,
       enlargeCenterPage: true,
@@ -51,36 +79,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
       height: MediaQuery.of(context).size.width,
       aspectRatio: 1 / 1,
       itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: _appTheme.getResponsiveWidth(10),
-              vertical: _appTheme.getResponsiveHeight(20)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(
-                  "https://is3-ssl.mzstatic.com/image/thumb/Music113/v4/b1/9f/66/b19f6600-640a-ae56-d6ab-1effaaf23afe/886448363347.jpg/200x200bb.png",
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                ),
-              ),
-              SizedBox(width: 10),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Master (Original Motion Picture Soundtrack)",
-                    textAlign: TextAlign.center,
-                    style: _appTheme.songTextStyle,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                ),
-              )
-            ],
-          ),
+        return CarouselItem(
+          _songData != null ? _songData?.feed?.results[index] : null,
+          onItemClicked: _showSongDetails,
         );
       },
     );
@@ -104,13 +105,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
           child: Row(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.network(
-                  "http://itunes.apple.com/favicon.ico",
-                  fit: BoxFit.cover,
-                ),
-              ),
-              _getTitle(),
+                  padding: const EdgeInsets.all(10.0),
+                  child: _fetchIconWidget()),
+              _songData != null ? _getTitle() : _getTitleShimmer()
             ],
           ),
         ),
@@ -124,21 +121,21 @@ class _DashBoardPageState extends State<DashBoardPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "New Indian Releases",
+          _songData?.feed?.title ?? "",
           textAlign: TextAlign.center,
           style: _appTheme.titleTextStyle,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),
         Text(
-          "by iTunes Store",
+          Strings.by + _songData?.feed?.author?.name ?? "",
           textAlign: TextAlign.center,
           style: _appTheme.subtitleTextStyle,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
         Text(
-          "Country : IN",
+          Strings.country + _songData?.feed?.country ?? "",
           textAlign: TextAlign.center,
           style: _appTheme.subtitleTextStyle,
           overflow: TextOverflow.ellipsis,
@@ -148,11 +145,113 @@ class _DashBoardPageState extends State<DashBoardPage> {
     );
   }
 
+  Widget _getTitleShimmer() {
+    return Flexible(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ShimmerWidget(
+            width: MediaQuery.of(context).size.width,
+            height: _appTheme.getResponsiveHeight(50),
+            margin: EdgeInsets.only(right: _appTheme.getResponsiveWidth(30)),
+            borderRadius: 3.0,
+          ),
+          SizedBox(
+            height: _appTheme.getResponsiveHeight(15),
+          ),
+          ShimmerWidget(
+            width: MediaQuery.of(context).size.width,
+            height: _appTheme.getResponsiveHeight(50),
+            margin: EdgeInsets.only(right: _appTheme.getResponsiveWidth(30)),
+            borderRadius: 3.0,
+          ),
+          SizedBox(
+            height: _appTheme.getResponsiveHeight(15),
+          ),
+          ShimmerWidget(
+            width: MediaQuery.of(context).size.width,
+            height: _appTheme.getResponsiveHeight(50),
+            margin: EdgeInsets.only(right: _appTheme.getResponsiveWidth(30)),
+            borderRadius: 3.0,
+          ),
+        ],
+      ),
+    );
+  }
+
   _getCopyRightsText() {
-    return Text(
-      "Copyright © 2018 Apple Inc. All rights reserved.",
-      style: _appTheme.copyRightsTextStyle,
-      textAlign: TextAlign.center,
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: _appTheme.getResponsiveWidth(100),
+      ),
+      child: _songData != null
+          ? Text(
+              "Copyright © 2018 Apple Inc. All rights reserved.",
+              style: _appTheme.copyRightsTextStyle,
+              textAlign: TextAlign.center,
+            )
+          : ShimmerWidget(
+              width: MediaQuery.of(context).size.width,
+              height: _appTheme.getResponsiveHeight(50),
+              borderRadius: 3.0,
+            ),
+    );
+  }
+
+  _showSongDetails(SongDetails songDetails) {
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (builder) {
+          return FractionallySizedBox(
+            heightFactor: 0.83,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: Colors.white,
+              ),
+              child: SongDetailsPage(songDetails),
+            ),
+          );
+        });
+  }
+
+  void _fetchSongList() {
+    ApiInterface.getInstance()
+        .getSongListRepository()
+        .fetchSongList()
+        .then((songData) {
+      _fetchSongDataStreamController.add(songData);
+    }).catchError((error) {});
+  }
+
+  @override
+  void dispose() {
+    _fetchSongDataStreamController.close();
+    super.dispose();
+  }
+
+  Widget _fetchIconWidget() {
+    return Container(
+      width: _appTheme.getResponsiveWidth(200),
+      height: _appTheme.getResponsiveWidth(200),
+      child: _songData != null && _songData?.feed?.icon != null
+          ? Image.network(
+              _songData?.feed?.icon,
+              frameBuilder: (context, widget, frame, isLoaded) {
+                return frame != null ? widget : _getShimmerIconWidget();
+              },
+              fit: BoxFit.cover,
+            )
+          : _getShimmerIconWidget(),
+    );
+  }
+
+  Widget _getShimmerIconWidget() {
+    return ShimmerWidget(
+      width: _appTheme.getResponsiveHeight(200),
     );
   }
 }

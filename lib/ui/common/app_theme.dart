@@ -10,6 +10,9 @@ class AppTheme extends BlocBase{
   double getResponsiveWidth(double value) => ScreenUtil().setWidth(value);
   double getResponsiveHeight(double value) => ScreenUtil().setHeight(value);
   Color get whiteColor => Colors.white;
+  Color get shimmerBackgroundColor => Color(0xff484848).withOpacity(0.3);
+  Color get shimmerBaseColor => Colors.grey[300];
+  Color get shimmerHighlightColor =>  Colors.grey[100];
 
   TextStyle get appBarTextStyle => TextStyle(
     color: Colors.white,
@@ -39,7 +42,37 @@ class AppTheme extends BlocBase{
       fontWeight: FontWeight.w500,
       fontSize: getResponsiveFont(45)
   );
-  
+
+  TextStyle get songDetailTitleTextStyle => TextStyle(
+      color: primaryColor,
+      fontWeight: FontWeight.w700,
+      fontSize: getResponsiveFont(56)
+  );
+
+  TextStyle get artistTextStyle => TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: getResponsiveFont(50)
+  );
+
+  TextStyle get releaseTextStyle => TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.w500,
+      fontSize: getResponsiveFont(45)
+  );
+
+  TextStyle get closeTextStyle => TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.w500,
+      fontSize: getResponsiveFont(50)
+  );
+
+  TextStyle get releasedLabelTextStyle => TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.w600,
+      fontSize: getResponsiveFont(45)
+  );
+
   @override
   void dispose() {
 
