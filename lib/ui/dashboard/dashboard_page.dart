@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterprojectsetup/di/api_interface.dart';
-import 'package:flutterprojectsetup/models/song_data.dart';
-import 'package:flutterprojectsetup/models/song_details.dart';
-import 'package:flutterprojectsetup/ui/common/app_theme.dart';
-import 'package:flutterprojectsetup/ui/common/bloc_provider.dart';
+import 'package:musiclibrary/di/api_interface.dart';
+import 'package:musiclibrary/models/song_data.dart';
+import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/ui/common/app_theme.dart';
+import 'package:musiclibrary/ui/common/bloc_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutterprojectsetup/ui/common/shimmer_widget.dart';
-import 'package:flutterprojectsetup/ui/common/strings.dart';
-import 'package:flutterprojectsetup/ui/song_details/song_details_page.dart';
+import 'package:musiclibrary/ui/common/shimmer_widget.dart';
+import 'package:musiclibrary/ui/common/strings.dart';
+import 'package:musiclibrary/ui/song_details/song_details_page.dart';
 
 import 'carousel_slider_item.dart';
 
@@ -200,22 +200,24 @@ class _DashBoardPageState extends State<DashBoardPage> {
   }
 
   _showSongDetails(SongDetails songDetails) {
-    return showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        builder: (builder) {
-          return FractionallySizedBox(
-            heightFactor: 0.83,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.white,
+    if (songDetails != null) {
+      return showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (builder) {
+            return FractionallySizedBox(
+              heightFactor: 0.90,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.white,
+                ),
+                child: SongDetailsPage(songDetails),
               ),
-              child: SongDetailsPage(songDetails),
-            ),
-          );
-        });
+            );
+          });
+    }
   }
 
   void _fetchSongList() {

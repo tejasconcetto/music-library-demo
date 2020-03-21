@@ -38,7 +38,7 @@ class AppTheme extends BlocBase{
   );
 
   TextStyle get copyRightsTextStyle => TextStyle(
-      color: primaryColor,
+      color: Colors.black,
       fontWeight: FontWeight.w500,
       fontSize: getResponsiveFont(45)
   );
@@ -62,8 +62,8 @@ class AppTheme extends BlocBase{
   );
 
   TextStyle get closeTextStyle => TextStyle(
-      color: Colors.grey,
-      fontWeight: FontWeight.w500,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
       fontSize: getResponsiveFont(50)
   );
 

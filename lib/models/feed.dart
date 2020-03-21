@@ -1,4 +1,4 @@
-import 'package:flutterprojectsetup/models/song_details.dart';
+import 'package:musiclibrary/models/song_details.dart';
 
 import 'author.dart';
 import 'links.dart';

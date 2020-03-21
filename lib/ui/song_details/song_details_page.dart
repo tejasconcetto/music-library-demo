@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterprojectsetup/models/song_details.dart';
-import 'package:flutterprojectsetup/ui/common/app_theme.dart';
-import 'package:flutterprojectsetup/ui/common/bloc_provider.dart';
-import 'package:flutterprojectsetup/ui/common/shimmer_widget.dart';
-import 'package:flutterprojectsetup/ui/common/strings.dart';
+import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/ui/common/app_theme.dart';
+import 'package:musiclibrary/ui/common/bloc_provider.dart';
+import 'package:musiclibrary/ui/common/shimmer_widget.dart';
+import 'package:musiclibrary/ui/common/strings.dart';
 import 'package:intl/intl.dart';
 
 class SongDetailsPage extends StatelessWidget {
@@ -17,38 +17,14 @@ class SongDetailsPage extends StatelessWidget {
     AppTheme _appTheme = BlocProvider.of(context).bloc;
     return Container(
       margin: EdgeInsets.symmetric(
-          horizontal: _appTheme.getResponsiveWidth(50),
-          vertical: _appTheme.getResponsiveHeight(50)),
+          horizontal: _appTheme.getResponsiveWidth(100),
+          vertical: _appTheme.getResponsiveHeight(100)),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _getNameForSong(_appTheme),
-          SizedBox(
-            height: _appTheme.getResponsiveHeight(50),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            child: AspectRatio(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: _getArtistImage(),
-              ),
-              aspectRatio: 1 / 1,
-            ),
-          ),
-          SizedBox(
-            height: _appTheme.getResponsiveHeight(30),
-          ),
-          _getArtistName(_appTheme),
-          SizedBox(
-            height: _appTheme.getResponsiveHeight(15),
-          ),
-          _getReleasedDate(_appTheme),
-          SizedBox(
-            height: _appTheme.getResponsiveHeight(15),
-          ),
-          _getGenresList(_appTheme),
+          _getSongDetails(_appTheme, context),
           _getCopyRightText(_appTheme),
-          _closeButton(_appTheme,context),
+          _closeButton(_appTheme, context),
         ],
       ),
     );
@@ -101,7 +77,11 @@ class SongDetailsPage extends StatelessWidget {
           maxLines: 1,
         ),
         Text(
-          _convertDate(_songDetails?.releaseDate) + " ("+_songDetails?.kind+")" ?? "",
+          _convertDate(_songDetails?.releaseDate) +
+                  " (" +
+                  _songDetails?.kind +
+                  ")" ??
+              "",
           style: _appTheme.releaseTextStyle,
           textAlign: TextAlign.center,
           maxLines: 1,
@@ -146,17 +126,15 @@ class SongDetailsPage extends StatelessWidget {
   }
 
   Widget _getCopyRightText(AppTheme _appTheme) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Text(
-            _songDetails?.copyright ?? "",
-            style: _appTheme.copyRightsTextStyle,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-          ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Text(
+          _songDetails?.copyright ?? "",
+          style: _appTheme.copyRightsTextStyle,
+          textAlign: TextAlign.center,
+          maxLines: 2,
         ),
       ),
     );
@@ -166,7 +144,7 @@ class SongDetailsPage extends StatelessWidget {
     return DateFormat("dd MMM yyyy").format(DateTime.parse(releaseDate));
   }
 
-  Widget _closeButton(AppTheme _appTheme,BuildContext context) {
+  Widget _closeButton(AppTheme _appTheme, BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.pop(context);
@@ -182,6 +160,39 @@ class SongDetailsPage extends StatelessWidget {
           maxLines: 2,
         ),
       ),
+    );
+  }
+
+  Widget _getSongDetails(AppTheme _appTheme, BuildContext context) {
+    return Column(
+      children: <Widget>[
+        _getNameForSong(_appTheme),
+        SizedBox(
+          height: _appTheme.getResponsiveHeight(50),
+        ),
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: AspectRatio(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              child: _getArtistImage(),
+            ),
+            aspectRatio: 1 / 1,
+          ),
+        ),
+        SizedBox(
+          height: _appTheme.getResponsiveHeight(30),
+        ),
+        _getArtistName(_appTheme),
+        SizedBox(
+          height: _appTheme.getResponsiveHeight(15),
+        ),
+        _getReleasedDate(_appTheme),
+        SizedBox(
+          height: _appTheme.getResponsiveHeight(15),
+        ),
+        _getGenresList(_appTheme),
+      ],
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterprojectsetup/models/song_details.dart';
-import 'package:flutterprojectsetup/ui/common/app_theme.dart';
-import 'package:flutterprojectsetup/ui/common/bloc_provider.dart';
-import 'package:flutterprojectsetup/ui/common/shimmer_widget.dart';
+import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/ui/common/app_theme.dart';
+import 'package:musiclibrary/ui/common/bloc_provider.dart';
+import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 
 class CarouselItem extends StatelessWidget {
   final SongDetails songDetails;

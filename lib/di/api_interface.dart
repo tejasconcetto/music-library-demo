@@ -1,4 +1,4 @@
-import 'package:flutterprojectsetup/repository/song_list_repository.dart';
+import 'package:musiclibrary/repository/song_list_repository.dart';
 
 class ApiInterface implements ApiInterfaceService{
 

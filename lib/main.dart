@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterprojectsetup/ui/common/app_theme.dart';
-import 'package:flutterprojectsetup/ui/common/routes.dart';
+import 'package:musiclibrary/ui/common/app_theme.dart';
+import 'package:musiclibrary/ui/common/routes.dart';
 
 import 'ui/common/bloc_provider.dart';
 

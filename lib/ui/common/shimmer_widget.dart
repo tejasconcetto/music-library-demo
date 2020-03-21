@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterprojectsetup/ui/common/app_theme.dart';
+import 'package:musiclibrary/ui/common/app_theme.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'bloc_provider.dart';

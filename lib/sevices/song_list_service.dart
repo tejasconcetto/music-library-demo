@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutterprojectsetup/models/song_data.dart';
-import 'package:flutterprojectsetup/ui/common/api_client.dart';
+import 'package:musiclibrary/models/song_data.dart';
+import 'package:musiclibrary/ui/common/api_client.dart';
 import 'package:http/http.dart' as http;
 class SongListService extends ApiClient{
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterprojectsetup/ui/dashboard/dashboard_page.dart';
+import 'package:musiclibrary/ui/dashboard/dashboard_page.dart';
 
 class RouteName{
   static final String root = "/";

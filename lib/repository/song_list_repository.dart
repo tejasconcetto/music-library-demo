@@ -1,5 +1,5 @@
-import 'package:flutterprojectsetup/models/song_data.dart';
-import 'package:flutterprojectsetup/sevices/song_list_service.dart';
+import 'package:musiclibrary/models/song_data.dart';
+import 'package:musiclibrary/sevices/song_list_service.dart';
 
 class SongListRepositoryImpl extends SongListRepository{
 

@@ -1,4 +1,4 @@
-import 'package:flutterprojectsetup/models/feed.dart';
+import 'package:musiclibrary/models/feed.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'song_data.g.dart';
 
