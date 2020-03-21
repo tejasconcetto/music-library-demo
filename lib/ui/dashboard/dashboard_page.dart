@@ -210,7 +210,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
               heightFactor: 0.90,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
                   color: Colors.white,
                 ),
                 child: SongDetailsPage(songDetails),
