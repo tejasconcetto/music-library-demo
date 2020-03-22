@@ -187,7 +187,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
       ),
       child: _songData != null
           ? Text(
-              "Copyright © 2018 Apple Inc. All rights reserved.",
+              _songData?.feed?.copyright??"",
               style: _appTheme.copyRightsTextStyle,
               textAlign: TextAlign.center,
             )
