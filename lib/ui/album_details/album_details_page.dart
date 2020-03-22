@@ -36,9 +36,9 @@ class AlbumDetailsPage extends StatelessWidget {
   }
 
   Widget _getArtistImage() {
-    return _albumDetails != null && _albumDetails?.artworkUrl100 != null
+    return _albumDetails != null && _albumDetails?.artworkUrl != null
         ? Image.network(
-            _albumDetails?.artworkUrl100,
+            _albumDetails?.artworkUrl,
             frameBuilder: (context, widget, frame, isLoaded) {
               return frame != null ? widget : _getShimmerWidget();
             },

@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
 
-class NetworkManager{
-
+///
+/// This class checks if device has internet connectivity or not
+///
+class NetworkManager {
   Connectivity connectivity = Connectivity();
 
-  StreamController<bool> _networkStreamController = StreamController.broadcast();
+  StreamController<bool> _networkStreamController =
+      StreamController.broadcast();
 
   Stream get networkStream => _networkStreamController.stream;
 
@@ -36,5 +39,6 @@ class NetworkManager{
     }
     _networkStreamController.sink.add(isInternet);
   }
+
   void disposeStream() => _networkStreamController.close();
 }

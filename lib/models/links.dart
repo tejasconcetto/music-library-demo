@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'links.g.dart';
 
+///
+/// this class contains Links information
+///
 @JsonSerializable()
 class Links {
   String self;

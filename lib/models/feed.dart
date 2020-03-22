@@ -1,11 +1,14 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:musiclibrary/models/album_details.dart';
 
 import 'author.dart';
 import 'links.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'feed.g.dart';
 
+///
+/// this class contains album item details
+///
 @JsonSerializable()
 class Feed {
   String title;

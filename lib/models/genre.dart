@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'genre.g.dart';
 
+///
+/// this class contains Genres information
+///
 @JsonSerializable()
 class Genres {
   String genreId;

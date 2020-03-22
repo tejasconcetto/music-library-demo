@@ -13,7 +13,7 @@ class CarouselItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppThemeState  _appThemeState = AppTheme.of(context);
+    AppThemeState _appThemeState = AppTheme.of(context);
     return InkWell(
       onTap: () {
         if (onItemClicked != null) {
@@ -50,14 +50,17 @@ class CarouselItem extends StatelessWidget {
     );
   }
 
+  ///
+  /// method returns artist thumbnail widget after fetching high resolution image
+  ///
   Widget _fetchArtistThumbnail(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        child: albumDetails != null && albumDetails?.artworkUrl100 != null
+        child: albumDetails != null && albumDetails?.artworkUrl != null
             ? Image.network(
-                fetchHighResolutionImage(albumDetails?.artworkUrl100),
+                fetchHighResolutionImage(albumDetails?.artworkUrl),
                 frameBuilder: (context, widget, frame, isLoaded) {
                   return frame != null ? widget : _getShimmerWidget();
                 },
@@ -68,6 +71,9 @@ class CarouselItem extends StatelessWidget {
     );
   }
 
+  ///
+  /// method returns shimmer widget while data is being loaded
+  ///
   Widget _getShimmerWidget() {
     return ShimmerWidget(
       borderRadius: 10,
@@ -75,14 +81,15 @@ class CarouselItem extends StatelessWidget {
   }
 
   ///
-  /// It converts low resolution image into high resolution image
+  /// method to convert low resolution image into high resolution image
   ///
   String fetchHighResolutionImage(String url) {
     String updatedImageUrl = url;
     if (url.contains(Constants.resolution200)) {
-      updatedImageUrl = url.replaceAll(Constants.resolution200, Constants.resolution512);
+      updatedImageUrl =
+          url.replaceAll(Constants.resolution200, Constants.resolution512);
     }
-    albumDetails.artworkUrl100 = updatedImageUrl;
+    albumDetails.artworkUrl = updatedImageUrl;
     return updatedImageUrl;
   }
 }

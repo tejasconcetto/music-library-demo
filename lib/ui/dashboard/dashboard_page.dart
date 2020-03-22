@@ -1,16 +1,16 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:musiclibrary/di/api_interface.dart';
 import 'package:musiclibrary/models/album_data.dart';
 import 'package:musiclibrary/models/album_details.dart';
+import 'package:musiclibrary/ui/album_details/album_details_page.dart';
 import 'package:musiclibrary/ui/common/app_theme.dart';
 import 'package:musiclibrary/ui/common/bloc_provider.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:musiclibrary/ui/common/constants.dart';
 import 'package:musiclibrary/ui/common/network_manager.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 import 'package:musiclibrary/ui/common/strings.dart';
-import 'package:musiclibrary/ui/album_details/album_details_page.dart';
 import 'package:musiclibrary/ui/dashboard/dashboard_bloc.dart';
 
 import '../common/bloc_provider.dart';
@@ -35,7 +35,7 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     initialiseNetworkManager();
     networkStream.listen((isConnected) {
       if (isConnected) {
-        _fetchAlbumList();
+        _fetchAlbumList(); //fetching list of album
       }
     });
   }
@@ -81,7 +81,6 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
                           ],
                         ),
                         _getNoInternetWidget(snapshot.hasData && !snapshot.data)
-
                       ],
                     );
                   });
@@ -90,6 +89,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method returns list of album fetched from server
+  ///
   Widget _getAlbums() {
     return CarouselSlider.builder(
       scrollDirection: Axis.horizontal,
@@ -109,6 +111,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method returns title and author of album item
+  ///
   Widget _getTitleAndAuthors() {
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -137,6 +142,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method returns title of album item
+  ///
   Widget _getTitle() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -167,6 +175,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method returns shimmer view of title while data is being fetched
+  ///
   Widget _getTitleShimmer() {
     return Flexible(
       child: Column(
@@ -205,6 +216,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method returns copy right text for album
+  ///
   _getCopyRightsText() {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -224,6 +238,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method to show details of album on click of item
+  ///
   _showAlbumDetails(AlbumDetails albumDetails) {
     if (albumDetails != null) {
       return showModalBottomSheet(
@@ -248,7 +265,7 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
   }
 
   ///
-  /// Fetching album details from server
+  /// method to Fetch album details from server
   ///
   void _fetchAlbumList() {
     ApiInterface.getInstance()
@@ -259,6 +276,9 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     }).catchError((error) {});
   }
 
+  ///
+  /// method returns Fetch icon for top header
+  ///
   Widget _fetchIconWidget() {
     return Container(
       width: _appThemeState.getResponsiveWidth(200),
@@ -275,19 +295,27 @@ class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
     );
   }
 
+  ///
+  /// method returns Fetch shimmer icon for top header while data is being fetched
+  ///
   Widget _getShimmerIconWidget() {
     return ShimmerWidget(
       width: _appThemeState.getResponsiveHeight(200),
     );
   }
 
+  ///
+  /// method returns no internet widget when user is not connected to internet
+  ///
   Widget _getNoInternetWidget(bool isNotConnected) {
     return AnimatedContainer(
       width: MediaQuery.of(context).size.width,
       duration: Duration(milliseconds: 500),
-      height: isNotConnected ? _appThemeState.getResponsiveHeight(120):0,
+      height: isNotConnected ? _appThemeState.getResponsiveHeight(120) : 0,
       color: Colors.red,
-      child: Center(child: Text(Strings.checkInternetConnection, style: _appThemeState.internetConnectionTextStyle)),
+      child: Center(
+          child: Text(Strings.checkInternetConnection,
+              style: _appThemeState.internetConnectionTextStyle)),
     );
   }
 }

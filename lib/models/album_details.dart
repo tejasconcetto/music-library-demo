@@ -1,9 +1,12 @@
-import 'genre.dart';
-
 import 'package:json_annotation/json_annotation.dart';
+
+import 'genre.dart';
 
 part 'album_details.g.dart';
 
+///
+/// this class contains album details
+///
 @JsonSerializable()
 class AlbumDetails {
   String artistName;
@@ -14,7 +17,7 @@ class AlbumDetails {
   String copyright;
   String artistId;
   String artistUrl;
-  String artworkUrl100;
+  String artworkUrl;
   List<Genres> genres;
   String url;
 
@@ -27,12 +30,13 @@ class AlbumDetails {
       this.copyright,
       this.artistId,
       this.artistUrl,
-      this.artworkUrl100,
+      this.artworkUrl,
       this.genres,
       this.url});
 
   /// Converts Json string to Map Object
-  factory AlbumDetails.fromJson(Map<String, dynamic> json) => _$AlbumDetailsFromJson(json);
+  factory AlbumDetails.fromJson(Map<String, dynamic> json) =>
+      _$AlbumDetailsFromJson(json);
 
   /// Converts Object to Json String
   Map<String, dynamic> toJson() => _$AlbumDetailsToJson(this);

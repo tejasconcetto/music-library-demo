@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:musiclibrary/ui/common/app_theme.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'bloc_provider.dart';
-
+///
+/// This class provides shimmer widget when data is being fetched from server
+///
 class ShimmerWidget extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
@@ -13,14 +14,14 @@ class ShimmerWidget extends StatelessWidget {
 
   ShimmerWidget(
       {this.padding,
-        this.margin,
-        this.width = 150,
-        this.height = 180,
-        this.borderRadius = 10});
+      this.margin,
+      this.width = 150,
+      this.height = 180,
+      this.borderRadius = 10});
 
   @override
   Widget build(BuildContext context) {
-    AppThemeState  _appThemeState = AppTheme.of(context);
+    AppThemeState _appThemeState = AppTheme.of(context);
     return ShimmerWrapper(
       child: Container(
         padding: padding != null ? padding : null,
@@ -43,7 +44,7 @@ class ShimmerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppThemeState  _appThemeState = AppTheme.of(context);
+    AppThemeState _appThemeState = AppTheme.of(context);
     return Shimmer.fromColors(
       baseColor: _appThemeState.shimmerBaseColor,
       highlightColor: _appThemeState.shimmerHighlightColor,

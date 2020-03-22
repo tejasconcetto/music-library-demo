@@ -16,7 +16,7 @@ AlbumDetails _$AlbumDetailsFromJson(Map<String, dynamic> json) {
     copyright: json['copyright'] as String,
     artistId: json['artistId'] as String,
     artistUrl: json['artistUrl'] as String,
-    artworkUrl100: json['artworkUrl100'] as String,
+    artworkUrl: json['artworkUrl100'] as String,
     genres: (json['genres'] as List)
         ?.map((e) =>
             e == null ? null : Genres.fromJson(e as Map<String, dynamic>))
@@ -35,7 +35,7 @@ Map<String, dynamic> _$AlbumDetailsToJson(AlbumDetails instance) =>
       'copyright': instance.copyright,
       'artistId': instance.artistId,
       'artistUrl': instance.artistUrl,
-      'artworkUrl100': instance.artworkUrl100,
+      'artworkUrl100': instance.artworkUrl,
       'genres': instance.genres,
       'url': instance.url,
     };

@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'author.g.dart';
 
+///
+/// this class contains author related information
+///
 @JsonSerializable()
 class Author {
   String name;
