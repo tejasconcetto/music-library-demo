@@ -1,16 +1,16 @@
 import 'package:musiclibrary/models/feed.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'song_data.g.dart';
+part 'album_data.g.dart';
 
 @JsonSerializable()
-class SongData {
+class AlbumData {
   Feed feed;
 
-  SongData({this.feed});
+  AlbumData({this.feed});
 
   /// Converts Json string to Map Object
-  factory SongData.fromJson(Map<String, dynamic> json) => _$SongDataFromJson(json);
+  factory AlbumData.fromJson(Map<String, dynamic> json) => _$AlbumDataFromJson(json);
 
   /// Converts Object to Json String
-  Map<String, dynamic> toJson() => _$SongDataToJson(this);
+  Map<String, dynamic> toJson() => _$AlbumDataToJson(this);
 }

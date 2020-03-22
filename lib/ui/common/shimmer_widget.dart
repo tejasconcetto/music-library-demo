@@ -20,7 +20,7 @@ class ShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppTheme _appTheme = BlocProvider.of(context).bloc;
+    AppThemeState  _appThemeState = AppTheme.of(context);
     return ShimmerWrapper(
       child: Container(
         padding: padding != null ? padding : null,
@@ -28,7 +28,7 @@ class ShimmerWidget extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: _appTheme.shimmerBackgroundColor,
+          color: _appThemeState.shimmerBackgroundColor,
           borderRadius: BorderRadius.circular(borderRadius),
         ),
       ),
@@ -43,10 +43,10 @@ class ShimmerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppTheme _appTheme = BlocProvider.of(context).bloc;
+    AppThemeState  _appThemeState = AppTheme.of(context);
     return Shimmer.fromColors(
-      baseColor: _appTheme.shimmerBaseColor,
-      highlightColor: _appTheme.shimmerHighlightColor,
+      baseColor: _appThemeState.shimmerBaseColor,
+      highlightColor: _appThemeState.shimmerHighlightColor,
       child: child,
     );
   }

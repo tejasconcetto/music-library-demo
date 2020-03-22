@@ -1,17 +1,18 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:musiclibrary/di/api_interface.dart';
-import 'package:musiclibrary/models/song_data.dart';
-import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/models/album_data.dart';
+import 'package:musiclibrary/models/album_details.dart';
 import 'package:musiclibrary/ui/common/app_theme.dart';
 import 'package:musiclibrary/ui/common/bloc_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:musiclibrary/ui/common/constants.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 import 'package:musiclibrary/ui/common/strings.dart';
-import 'package:musiclibrary/ui/song_details/song_details_page.dart';
+import 'package:musiclibrary/ui/album_details/album_details_page.dart';
+import 'package:musiclibrary/ui/dashboard/dashboard_bloc.dart';
 
+import '../common/bloc_provider.dart';
 import 'carousel_slider_item.dart';
 
 class DashBoardPage extends StatefulWidget {
@@ -22,56 +23,61 @@ class DashBoardPage extends StatefulWidget {
 }
 
 class _DashBoardPageState extends State<DashBoardPage> {
-  AppTheme _appTheme;
-  StreamController<SongData> _fetchSongDataStreamController =
-      StreamController();
-  SongData _songData;
+  AppThemeState _appThemeState;
+
+  AlbumData _albumData;
+  final dashBoardBloc = DashBoardBloc();
 
   @override
   void initState() {
     super.initState();
-    _fetchSongList();
+    _fetchAlbumList();
   }
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context,
-        width: 1242, height: 2688, allowFontScaling: false);
-    _appTheme = BlocProvider.of(context).bloc;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          Strings.appBarTitle,
-          style: _appTheme.appBarTextStyle,
+        width: Constants.expectedDeviceWidth,
+        height: Constants.expectedDeviceHeight,
+        allowFontScaling: false);
+    _appThemeState = AppTheme.of(context);
+    return BlocProvider<DashBoardBloc>(
+      bloc: dashBoardBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            Strings.appBarTitle,
+            style: _appThemeState.appBarTextStyle,
+          ),
+          backgroundColor: _appThemeState.primaryColor,
         ),
-        backgroundColor: _appTheme.primaryColor,
+        backgroundColor: Colors.white,
+        body: StreamBuilder<AlbumData>(
+            stream: dashBoardBloc.fetchAlbumDataStreamController,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                _albumData = snapshot.data;
+              }
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _getTitleAndAuthors(),
+                  _getAlbums(),
+                  _getCopyRightsText(),
+                  SizedBox(
+                    height: _appThemeState.getResponsiveHeight(100),
+                  ),
+                ],
+              );
+            }),
       ),
-      backgroundColor: Colors.white,
-      body: StreamBuilder<SongData>(
-          stream: _fetchSongDataStreamController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              _songData = snapshot.data;
-            }
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _getTitleAndAuthors(),
-                _getSongs(),
-                _getCopyRightsText(),
-                SizedBox(
-                  height: _appTheme.getResponsiveHeight(100),
-                ),
-              ],
-            );
-          }),
     );
   }
 
-  Widget _getSongs() {
+  Widget _getAlbums() {
     return CarouselSlider.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: _songData != null ? _songData?.feed?.results?.length : 10,
+      itemCount: _albumData != null ? _albumData?.feed?.results?.length : 10,
       enableInfiniteScroll: true,
       autoPlay: false,
       enlargeCenterPage: true,
@@ -80,8 +86,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
       aspectRatio: 1 / 1,
       itemBuilder: (BuildContext context, int index) {
         return CarouselItem(
-          _songData != null ? _songData?.feed?.results[index] : null,
-          onItemClicked: _showSongDetails,
+          _albumData != null ? _albumData?.feed?.results[index] : null,
+          onItemClicked: _showAlbumDetails,
         );
       },
     );
@@ -91,23 +97,23 @@ class _DashBoardPageState extends State<DashBoardPage> {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: EdgeInsets.symmetric(
-          horizontal: _appTheme.getResponsiveWidth(30),
-          vertical: _appTheme.getResponsiveHeight(20)),
+          horizontal: _appThemeState.getResponsiveWidth(30),
+          vertical: _appThemeState.getResponsiveHeight(20)),
       child: Card(
-        color: _appTheme.whiteColor,
+        color: _appThemeState.whiteColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: _appTheme.getResponsiveHeight(300),
+          height: _appThemeState.getResponsiveHeight(300),
           child: Row(
             children: <Widget>[
               Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: _fetchIconWidget()),
-              _songData != null ? _getTitle() : _getTitleShimmer()
+              _albumData != null ? _getTitle() : _getTitleShimmer()
             ],
           ),
         ),
@@ -121,23 +127,23 @@ class _DashBoardPageState extends State<DashBoardPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          _songData?.feed?.title ?? "",
+          _albumData?.feed?.title ?? "",
           textAlign: TextAlign.center,
-          style: _appTheme.titleTextStyle,
+          style: _appThemeState.titleTextStyle,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),
         Text(
-          Strings.by + _songData?.feed?.author?.name ?? "",
+          Strings.by + _albumData?.feed?.author?.name ?? "",
           textAlign: TextAlign.center,
-          style: _appTheme.subtitleTextStyle,
+          style: _appThemeState.subtitleTextStyle,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
         Text(
-          Strings.country + _songData?.feed?.country ?? "",
+          Strings.country + _albumData?.feed?.country ?? "",
           textAlign: TextAlign.center,
-          style: _appTheme.subtitleTextStyle,
+          style: _appThemeState.subtitleTextStyle,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         )
@@ -153,26 +159,29 @@ class _DashBoardPageState extends State<DashBoardPage> {
         children: <Widget>[
           ShimmerWidget(
             width: MediaQuery.of(context).size.width,
-            height: _appTheme.getResponsiveHeight(50),
-            margin: EdgeInsets.only(right: _appTheme.getResponsiveWidth(30)),
+            height: _appThemeState.getResponsiveHeight(50),
+            margin:
+                EdgeInsets.only(right: _appThemeState.getResponsiveWidth(30)),
             borderRadius: 3.0,
           ),
           SizedBox(
-            height: _appTheme.getResponsiveHeight(15),
+            height: _appThemeState.getResponsiveHeight(15),
           ),
           ShimmerWidget(
             width: MediaQuery.of(context).size.width,
-            height: _appTheme.getResponsiveHeight(50),
-            margin: EdgeInsets.only(right: _appTheme.getResponsiveWidth(30)),
+            height: _appThemeState.getResponsiveHeight(50),
+            margin:
+                EdgeInsets.only(right: _appThemeState.getResponsiveWidth(30)),
             borderRadius: 3.0,
           ),
           SizedBox(
-            height: _appTheme.getResponsiveHeight(15),
+            height: _appThemeState.getResponsiveHeight(15),
           ),
           ShimmerWidget(
             width: MediaQuery.of(context).size.width,
-            height: _appTheme.getResponsiveHeight(50),
-            margin: EdgeInsets.only(right: _appTheme.getResponsiveWidth(30)),
+            height: _appThemeState.getResponsiveHeight(50),
+            margin:
+                EdgeInsets.only(right: _appThemeState.getResponsiveWidth(30)),
             borderRadius: 3.0,
           ),
         ],
@@ -183,24 +192,24 @@ class _DashBoardPageState extends State<DashBoardPage> {
   _getCopyRightsText() {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: _appTheme.getResponsiveWidth(100),
+        horizontal: _appThemeState.getResponsiveWidth(100),
       ),
-      child: _songData != null
+      child: _albumData != null
           ? Text(
-              _songData?.feed?.copyright??"",
-              style: _appTheme.copyRightsTextStyle,
+              _albumData?.feed?.copyright ?? "",
+              style: _appThemeState.copyRightsTextStyle,
               textAlign: TextAlign.center,
             )
           : ShimmerWidget(
               width: MediaQuery.of(context).size.width,
-              height: _appTheme.getResponsiveHeight(50),
+              height: _appThemeState.getResponsiveHeight(50),
               borderRadius: 3.0,
             ),
     );
   }
 
-  _showSongDetails(SongDetails songDetails) {
-    if (songDetails != null) {
+  _showAlbumDetails(AlbumDetails albumDetails) {
+    if (albumDetails != null) {
       return showModalBottomSheet(
           context: context,
           backgroundColor: Colors.transparent,
@@ -210,38 +219,37 @@ class _DashBoardPageState extends State<DashBoardPage> {
               heightFactor: 0.90,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
                   color: Colors.white,
                 ),
-                child: SongDetailsPage(songDetails),
+                child: AlbumDetailsPage(albumDetails),
               ),
             );
           });
     }
   }
 
-  void _fetchSongList() {
+  ///
+  /// Fetching album details from server
+  ///
+  void _fetchAlbumList() {
     ApiInterface.getInstance()
-        .getSongListRepository()
-        .fetchSongList()
-        .then((songData) {
-      _fetchSongDataStreamController.add(songData);
+        .getAlbumListRepository()
+        .fetchAlbumList()
+        .then((albumData) {
+      dashBoardBloc.setAlbumData(albumData);
     }).catchError((error) {});
-  }
-
-  @override
-  void dispose() {
-    _fetchSongDataStreamController.close();
-    super.dispose();
   }
 
   Widget _fetchIconWidget() {
     return Container(
-      width: _appTheme.getResponsiveWidth(200),
-      height: _appTheme.getResponsiveWidth(200),
-      child: _songData != null && _songData?.feed?.icon != null
+      width: _appThemeState.getResponsiveWidth(200),
+      height: _appThemeState.getResponsiveWidth(200),
+      child: _albumData != null && _albumData?.feed?.icon != null
           ? Image.network(
-              _songData?.feed?.icon,
+              _albumData?.feed?.icon,
               frameBuilder: (context, widget, frame, isLoaded) {
                 return frame != null ? widget : _getShimmerIconWidget();
               },
@@ -253,7 +261,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   Widget _getShimmerIconWidget() {
     return ShimmerWidget(
-      width: _appTheme.getResponsiveHeight(200),
+      width: _appThemeState.getResponsiveHeight(200),
     );
   }
 }

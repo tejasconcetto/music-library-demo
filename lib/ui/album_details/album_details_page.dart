@@ -1,32 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/models/album_details.dart';
 import 'package:musiclibrary/ui/common/app_theme.dart';
-import 'package:musiclibrary/ui/common/bloc_provider.dart';
+import 'package:musiclibrary/ui/common/constants.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 import 'package:musiclibrary/ui/common/strings.dart';
 import 'package:intl/intl.dart';
 
-class SongDetailsPage extends StatelessWidget {
-  final SongDetails _songDetails;
+class AlbumDetailsPage extends StatelessWidget {
+  final AlbumDetails _albumDetails;
 
-  SongDetailsPage(this._songDetails);
+  AlbumDetailsPage(this._albumDetails);
 
   @override
   Widget build(BuildContext context) {
-    AppTheme _appTheme = BlocProvider.of(context).bloc;
+    AppThemeState  _appThemeState = AppTheme.of(context);
     return Stack(
       children: <Widget>[
-        _closeButton(_appTheme, context),
+        _closeButton(_appThemeState, context),
         Container(
           margin: EdgeInsets.symmetric(
-              horizontal: _appTheme.getResponsiveWidth(100),
-              vertical: _appTheme.getResponsiveHeight(200)),
+              horizontal: _appThemeState.getResponsiveWidth(100),
+              vertical: _appThemeState.getResponsiveHeight(200)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              _getSongDetails(_appTheme, context),
-              _getCopyRightText(_appTheme),
+              _getAlbumDetails(_appThemeState, context),
+              _getCopyRightText(_appThemeState),
             ],
           ),
         ),
@@ -35,9 +35,9 @@ class SongDetailsPage extends StatelessWidget {
   }
 
   Widget _getArtistImage() {
-    return _songDetails != null && _songDetails?.artworkUrl100 != null
+    return _albumDetails != null && _albumDetails?.artworkUrl100 != null
         ? Image.network(
-            _songDetails?.artworkUrl100,
+            _albumDetails?.artworkUrl100,
             frameBuilder: (context, widget, frame, isLoaded) {
               return frame != null ? widget : _getShimmerWidget();
             },
@@ -52,41 +52,41 @@ class SongDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _getNameForSong(AppTheme _appTheme) {
+  Widget _getNameForAlbum(AppThemeState _appThemeState) {
     return Text(
-      _songDetails?.name ?? "",
-      style: _appTheme.songDetailTitleTextStyle,
+      _albumDetails?.name ?? "",
+      style: _appThemeState.albumDetailTitleTextStyle,
       textAlign: TextAlign.center,
       maxLines: 2,
     );
   }
 
-  _getArtistName(AppTheme _appTheme) {
+  _getArtistName(AppThemeState _appThemeState) {
     return Text(
-      (_songDetails?.artistName ?? "") + Strings.artist,
-      style: _appTheme.artistTextStyle,
+      (_albumDetails?.artistName ?? "") + Strings.artist,
+      style: _appThemeState.artistTextStyle,
       textAlign: TextAlign.center,
       maxLines: 2,
     );
   }
 
-  _getReleasedDate(AppTheme _appTheme) {
+  _getReleasedDate(AppThemeState _appThemeState) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
           Strings.releasedOn,
-          style: _appTheme.releasedLabelTextStyle,
+          style: _appThemeState.releasedLabelTextStyle,
           textAlign: TextAlign.center,
           maxLines: 1,
         ),
         Text(
-          _convertDate(_songDetails?.releaseDate) +
+          _convertDate(_albumDetails?.releaseDate) +
                   " (" +
-                  _songDetails?.kind +
+                  _albumDetails?.kind +
                   ")" ??
               "",
-          style: _appTheme.releaseTextStyle,
+          style: _appThemeState.releaseTextStyle,
           textAlign: TextAlign.center,
           maxLines: 1,
         ),
@@ -94,21 +94,21 @@ class SongDetailsPage extends StatelessWidget {
     );
   }
 
-  _getGenresList(AppTheme _appTheme) {
+  _getGenresList(AppThemeState _appThemeState) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           Strings.genres,
-          style: _appTheme.releasedLabelTextStyle,
+          style: _appThemeState.releasedLabelTextStyle,
           textAlign: TextAlign.center,
           maxLines: 1,
         ),
         Flexible(
           child: Text(
             _getGenres(),
-            style: _appTheme.releaseTextStyle,
+            style: _appThemeState.releaseTextStyle,
             maxLines: 2,
           ),
         ),
@@ -117,9 +117,9 @@ class SongDetailsPage extends StatelessWidget {
   }
 
   String _getGenres() {
-    if (_songDetails.genres != null && _songDetails.genres.length > 0) {
+    if (_albumDetails.genres != null && _albumDetails.genres.length > 0) {
       List<String> genres = List();
-      _songDetails.genres.forEach((genre) {
+      _albumDetails.genres.forEach((genre) {
         genres.add(genre?.name ?? "");
       });
       return genres.join(" / ");
@@ -128,14 +128,14 @@ class SongDetailsPage extends StatelessWidget {
     }
   }
 
-  Widget _getCopyRightText(AppTheme _appTheme) {
+  Widget _getCopyRightText(AppThemeState _appThemeState) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Text(
-          _songDetails?.copyright ?? "",
-          style: _appTheme.copyRightsTextStyle,
+          _albumDetails?.copyright ?? "",
+          style: _appThemeState.copyRightsTextStyle,
           textAlign: TextAlign.center,
           maxLines: 2,
         ),
@@ -144,10 +144,10 @@ class SongDetailsPage extends StatelessWidget {
   }
 
   String _convertDate(String releaseDate) {
-    return DateFormat("dd MMM yyyy").format(DateTime.parse(releaseDate));
+    return DateFormat(Constants.DMYFormat).format(DateTime.parse(releaseDate));
   }
 
-  Widget _closeButton(AppTheme _appTheme, BuildContext context) {
+  Widget _closeButton(AppThemeState _appThemeState, BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: InkWell(
@@ -155,25 +155,25 @@ class SongDetailsPage extends StatelessWidget {
           Navigator.pop(context);
         },
         child: Container(
-          margin: EdgeInsets.only(top: _appTheme.getResponsiveHeight(60),right: _appTheme.getResponsiveWidth(40)),
-          width: _appTheme.getResponsiveWidth(100),
-          height: _appTheme.getResponsiveHeight(100),
+          margin: EdgeInsets.only(top: _appThemeState.getResponsiveHeight(60),right: _appThemeState.getResponsiveWidth(40)),
+          width: _appThemeState.getResponsiveWidth(100),
+          height: _appThemeState.getResponsiveHeight(100),
           child: Icon(
             Icons.close,
             color: Colors.grey,
-            size: _appTheme.getResponsiveWidth(100),
+            size: _appThemeState.getResponsiveWidth(100),
           ),
         ),
       ),
     );
   }
 
-  Widget _getSongDetails(AppTheme _appTheme, BuildContext context) {
+  Widget _getAlbumDetails(AppThemeState _appThemeState, BuildContext context) {
     return Column(
       children: <Widget>[
-        _getNameForSong(_appTheme),
+        _getNameForAlbum(_appThemeState),
         SizedBox(
-          height: _appTheme.getResponsiveHeight(50),
+          height: _appThemeState.getResponsiveHeight(50),
         ),
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -186,17 +186,17 @@ class SongDetailsPage extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: _appTheme.getResponsiveHeight(30),
+          height: _appThemeState.getResponsiveHeight(30),
         ),
-        _getArtistName(_appTheme),
+        _getArtistName(_appThemeState),
         SizedBox(
-          height: _appTheme.getResponsiveHeight(15),
+          height: _appThemeState.getResponsiveHeight(15),
         ),
-        _getReleasedDate(_appTheme),
+        _getReleasedDate(_appThemeState),
         SizedBox(
-          height: _appTheme.getResponsiveHeight(15),
+          height: _appThemeState.getResponsiveHeight(15),
         ),
-        _getGenresList(_appTheme),
+        _getGenresList(_appThemeState),
       ],
     );
   }

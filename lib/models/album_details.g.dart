@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'song_details.dart';
+part of 'album_details.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SongDetails _$SongDetailsFromJson(Map<String, dynamic> json) {
-  return SongDetails(
+AlbumDetails _$AlbumDetailsFromJson(Map<String, dynamic> json) {
+  return AlbumDetails(
     artistName: json['artistName'] as String,
     id: json['id'] as String,
     releaseDate: json['releaseDate'] as String,
@@ -25,7 +25,7 @@ SongDetails _$SongDetailsFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$SongDetailsToJson(SongDetails instance) =>
+Map<String, dynamic> _$AlbumDetailsToJson(AlbumDetails instance) =>
     <String, dynamic>{
       'artistName': instance.artistName,
       'id': instance.id,

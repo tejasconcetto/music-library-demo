@@ -1,29 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/models/album_details.dart';
 import 'package:musiclibrary/ui/common/app_theme.dart';
 import 'package:musiclibrary/ui/common/bloc_provider.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 
 class CarouselItem extends StatelessWidget {
-  final SongDetails songDetails;
+  final AlbumDetails albumDetails;
   final Function onItemClicked;
 
-  CarouselItem(this.songDetails, {this.onItemClicked});
+  CarouselItem(this.albumDetails, {this.onItemClicked});
 
   @override
   Widget build(BuildContext context) {
-    AppTheme _appTheme = BlocProvider.of(context).bloc;
+    AppThemeState  _appThemeState = AppTheme.of(context);
     return InkWell(
       onTap: () {
         if (onItemClicked != null) {
-          onItemClicked(songDetails);
+          onItemClicked(albumDetails);
         }
       },
       child: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: _appTheme.getResponsiveWidth(10),
-            vertical: _appTheme.getResponsiveHeight(20)),
+            horizontal: _appThemeState.getResponsiveWidth(10),
+            vertical: _appThemeState.getResponsiveHeight(20)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -36,9 +36,9 @@ class CarouselItem extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  songDetails?.name ?? "",
+                  albumDetails?.name ?? "",
                   textAlign: TextAlign.center,
-                  style: _appTheme.songTextStyle,
+                  style: _appThemeState.albumTextStyle,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -55,9 +55,9 @@ class CarouselItem extends StatelessWidget {
       aspectRatio: 1 / 1,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        child: songDetails != null && songDetails?.artworkUrl100 != null
+        child: albumDetails != null && albumDetails?.artworkUrl100 != null
             ? Image.network(
-                fetchBigImage(songDetails?.artworkUrl100),
+                fetchHighResolutionImage(albumDetails?.artworkUrl100),
                 frameBuilder: (context, widget, frame, isLoaded) {
                   return frame != null ? widget : _getShimmerWidget();
                 },
@@ -74,12 +74,15 @@ class CarouselItem extends StatelessWidget {
     );
   }
 
-  String fetchBigImage(String url) {
+  ///
+  /// It converts low resolution image into high resolution image
+  ///
+  String fetchHighResolutionImage(String url) {
     String updatedImageUrl = url;
     if (url.contains("200x200")) {
       updatedImageUrl = url.replaceAll("200x200", "512x512");
     }
-    songDetails.artworkUrl100 = updatedImageUrl;
+    albumDetails.artworkUrl100 = updatedImageUrl;
     return updatedImageUrl;
   }
 }

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 abstract class BlocBase{
-  void dispose();
+  void dispose(){}
 }
 
-class BlocProvider extends StatefulWidget{
+class BlocProvider<BlocBase> extends StatefulWidget{
 
   final Widget child;
   final BlocBase bloc;
 
   BlocProvider({Key key, @required this.child, @required this.bloc}):super(key :key);
 
-  static _BlocProviderInherited of(BuildContext context) {
+  static _BlocProviderInherited of<BlocBase>(BuildContext context) {
     _BlocProviderInherited provider = context.dependOnInheritedWidgetOfExactType();
     return provider;
   }

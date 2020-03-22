@@ -1,4 +1,4 @@
-import 'package:musiclibrary/repository/song_list_repository.dart';
+import 'package:musiclibrary/repository/album_list_repository.dart';
 
 class ApiInterface implements ApiInterfaceService{
 
@@ -12,12 +12,12 @@ class ApiInterface implements ApiInterfaceService{
   }
 
   @override
-  SongListRepositoryImpl getSongListRepository() {
-    return SongListRepositoryImpl();
+  AlbumListRepositoryImpl getAlbumListRepository() {
+    return AlbumListRepositoryImpl();
   }
 }
 
 abstract class ApiInterfaceService {
 
-  SongListRepositoryImpl getSongListRepository();
+  AlbumListRepositoryImpl getAlbumListRepository();
 }

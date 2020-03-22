@@ -1,4 +1,4 @@
-import 'package:musiclibrary/models/song_details.dart';
+import 'package:musiclibrary/models/album_details.dart';
 
 import 'author.dart';
 import 'links.dart';
@@ -16,7 +16,7 @@ class Feed {
   String country;
   String icon;
   String updated;
-  List<SongDetails> results;
+  List<AlbumDetails> results;
 
   Feed(
       {this.title,

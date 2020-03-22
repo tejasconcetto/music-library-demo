@@ -23,7 +23,7 @@ Feed _$FeedFromJson(Map<String, dynamic> json) {
     updated: json['updated'] as String,
     results: (json['results'] as List)
         ?.map((e) =>
-            e == null ? null : SongDetails.fromJson(e as Map<String, dynamic>))
+            e == null ? null : AlbumDetails.fromJson(e as Map<String, dynamic>))
         ?.toList(),
   );
 }

@@ -1,19 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'song_data.dart';
+part of 'album_data.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SongData _$SongDataFromJson(Map<String, dynamic> json) {
-  return SongData(
+AlbumData _$AlbumDataFromJson(Map<String, dynamic> json) {
+  return AlbumData(
     feed: json['feed'] == null
         ? null
         : Feed.fromJson(json['feed'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$SongDataToJson(SongData instance) => <String, dynamic>{
+Map<String, dynamic> _$AlbumDataToJson(AlbumData instance) => <String, dynamic>{
       'feed': instance.feed,
     };
