@@ -63,7 +63,7 @@ class SongDetailsPage extends StatelessWidget {
 
   _getArtistName(AppTheme _appTheme) {
     return Text(
-      _songDetails.artistName + Strings.artist,
+      (_songDetails?.artistName ?? "") + Strings.artist,
       style: _appTheme.artistTextStyle,
       textAlign: TextAlign.center,
       maxLines: 2,
