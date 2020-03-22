@@ -57,7 +57,7 @@ class CarouselItem extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: songDetails != null && songDetails?.artworkUrl100 != null
             ? Image.network(
-                songDetails?.artworkUrl100,
+                fetchBigImage(songDetails?.artworkUrl100),
                 frameBuilder: (context, widget, frame, isLoaded) {
                   return frame != null ? widget : _getShimmerWidget();
                 },
@@ -72,5 +72,14 @@ class CarouselItem extends StatelessWidget {
     return ShimmerWidget(
       borderRadius: 10,
     );
+  }
+
+  String fetchBigImage(String url) {
+    String updatedImageUrl = url;
+    if (url.contains("200x200")) {
+      updatedImageUrl = url.replaceAll("200x200", "512x512");
+    }
+    songDetails.artworkUrl100 = updatedImageUrl;
+    return updatedImageUrl;
   }
 }

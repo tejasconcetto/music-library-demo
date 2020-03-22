@@ -15,18 +15,22 @@ class SongDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppTheme _appTheme = BlocProvider.of(context).bloc;
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: _appTheme.getResponsiveWidth(100),
-          vertical: _appTheme.getResponsiveHeight(100)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          _getSongDetails(_appTheme, context),
-          _getCopyRightText(_appTheme),
-          _closeButton(_appTheme, context),
-        ],
-      ),
+    return Stack(
+      children: <Widget>[
+        _closeButton(_appTheme, context),
+        Container(
+          margin: EdgeInsets.symmetric(
+              horizontal: _appTheme.getResponsiveWidth(100),
+              vertical: _appTheme.getResponsiveHeight(200)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              _getSongDetails(_appTheme, context),
+              _getCopyRightText(_appTheme),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -105,7 +109,6 @@ class SongDetailsPage extends StatelessWidget {
           child: Text(
             _getGenres(),
             style: _appTheme.releaseTextStyle,
-            textAlign: TextAlign.center,
             maxLines: 2,
           ),
         ),
@@ -145,19 +148,21 @@ class SongDetailsPage extends StatelessWidget {
   }
 
   Widget _closeButton(AppTheme _appTheme, BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        width: _appTheme.getResponsiveWidth(200),
-        height: _appTheme.getResponsiveHeight(150),
-        child: Text(
-          Strings.close,
-          style: _appTheme.closeTextStyle,
-          textAlign: TextAlign.center,
-          maxLines: 2,
+    return Align(
+      alignment: Alignment.topRight,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Container(
+          margin: EdgeInsets.only(top: _appTheme.getResponsiveHeight(60),right: _appTheme.getResponsiveWidth(40)),
+          width: _appTheme.getResponsiveWidth(100),
+          height: _appTheme.getResponsiveHeight(100),
+          child: Icon(
+            Icons.close,
+            color: Colors.grey,
+            size: _appTheme.getResponsiveWidth(100),
+          ),
         ),
       ),
     );
