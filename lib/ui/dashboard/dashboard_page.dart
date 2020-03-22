@@ -7,6 +7,7 @@ import 'package:musiclibrary/ui/common/bloc_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:musiclibrary/ui/common/constants.dart';
+import 'package:musiclibrary/ui/common/network_manager.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 import 'package:musiclibrary/ui/common/strings.dart';
 import 'package:musiclibrary/ui/album_details/album_details_page.dart';
@@ -22,7 +23,7 @@ class DashBoardPage extends StatefulWidget {
   }
 }
 
-class _DashBoardPageState extends State<DashBoardPage> {
+class _DashBoardPageState extends State<DashBoardPage> with NetworkManager {
   AppThemeState _appThemeState;
 
   AlbumData _albumData;
@@ -31,7 +32,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
   @override
   void initState() {
     super.initState();
-    _fetchAlbumList();
+    initialiseNetworkManager();
+    networkStream.listen((isConnected) {
+      if (isConnected) {
+        _fetchAlbumList();
+      }
+    });
   }
 
   @override
@@ -58,17 +64,27 @@ class _DashBoardPageState extends State<DashBoardPage> {
               if (snapshot.hasData) {
                 _albumData = snapshot.data;
               }
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  _getTitleAndAuthors(),
-                  _getAlbums(),
-                  _getCopyRightsText(),
-                  SizedBox(
-                    height: _appThemeState.getResponsiveHeight(100),
-                  ),
-                ],
-              );
+              return StreamBuilder<bool>(
+                  stream: networkStream,
+                  builder: (context, snapshot) {
+                    return Stack(
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            _getTitleAndAuthors(),
+                            _getAlbums(),
+                            _getCopyRightsText(),
+                            SizedBox(
+                              height: _appThemeState.getResponsiveHeight(100),
+                            ),
+                          ],
+                        ),
+                        _getNoInternetWidget(snapshot.hasData && !snapshot.data)
+
+                      ],
+                    );
+                  });
             }),
       ),
     );
@@ -262,6 +278,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Widget _getShimmerIconWidget() {
     return ShimmerWidget(
       width: _appThemeState.getResponsiveHeight(200),
+    );
+  }
+
+  Widget _getNoInternetWidget(bool isNotConnected) {
+    return AnimatedContainer(
+      width: MediaQuery.of(context).size.width,
+      duration: Duration(milliseconds: 500),
+      height: isNotConnected ? _appThemeState.getResponsiveHeight(120):0,
+      color: Colors.red,
+      child: Center(child: Text(Strings.checkInternetConnection, style: _appThemeState.internetConnectionTextStyle)),
     );
   }
 }

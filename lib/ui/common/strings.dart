@@ -1,9 +1,12 @@
+import 'package:musiclibrary/ui/common/utils.dart';
+
 class Strings {
   static const String appBarTitle = "Music Library";
   static const String by = "by ";
   static const String country = "Country : ";
   static const String releasedOn = "Released on : ";
-  static const String artist = " (Artist)";
+  static final String artist = getValueWithBracket("Artist");
   static const String genres = "Genres : ";
   static const String failedToFetchAlbum = "Failed to fetch albums";
+  static const String checkInternetConnection = "Check your internet connectivity";
 }

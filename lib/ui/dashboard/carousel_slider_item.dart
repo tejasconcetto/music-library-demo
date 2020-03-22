@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musiclibrary/models/album_details.dart';
 import 'package:musiclibrary/ui/common/app_theme.dart';
-import 'package:musiclibrary/ui/common/bloc_provider.dart';
+import 'package:musiclibrary/ui/common/constants.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 
 class CarouselItem extends StatelessWidget {
@@ -79,8 +79,8 @@ class CarouselItem extends StatelessWidget {
   ///
   String fetchHighResolutionImage(String url) {
     String updatedImageUrl = url;
-    if (url.contains("200x200")) {
-      updatedImageUrl = url.replaceAll("200x200", "512x512");
+    if (url.contains(Constants.resolution200)) {
+      updatedImageUrl = url.replaceAll(Constants.resolution200, Constants.resolution512);
     }
     albumDetails.artworkUrl100 = updatedImageUrl;
     return updatedImageUrl;

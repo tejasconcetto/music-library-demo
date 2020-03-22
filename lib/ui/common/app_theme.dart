@@ -110,6 +110,13 @@ class AppThemeState extends State<AppTheme> {
           fontSize: getResponsiveFont(45)
       );
 
+  TextStyle get internetConnectionTextStyle =>
+      TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w400,
+          fontSize: getResponsiveFont(40)
+      );
+
   @override
   Widget build(BuildContext context) {
     return _InheritedStateContainer(

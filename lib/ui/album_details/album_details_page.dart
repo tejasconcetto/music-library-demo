@@ -6,6 +6,7 @@ import 'package:musiclibrary/ui/common/constants.dart';
 import 'package:musiclibrary/ui/common/shimmer_widget.dart';
 import 'package:musiclibrary/ui/common/strings.dart';
 import 'package:intl/intl.dart';
+import 'package:musiclibrary/ui/common/utils.dart';
 
 class AlbumDetailsPage extends StatelessWidget {
   final AlbumDetails _albumDetails;
@@ -14,7 +15,7 @@ class AlbumDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppThemeState  _appThemeState = AppTheme.of(context);
+    AppThemeState _appThemeState = AppTheme.of(context);
     return Stack(
       children: <Widget>[
         _closeButton(_appThemeState, context),
@@ -82,9 +83,7 @@ class AlbumDetailsPage extends StatelessWidget {
         ),
         Text(
           _convertDate(_albumDetails?.releaseDate) +
-                  " (" +
-                  _albumDetails?.kind +
-                  ")" ??
+                  getValueWithBracket(_albumDetails?.kind) ??
               "",
           style: _appThemeState.releaseTextStyle,
           textAlign: TextAlign.center,
@@ -122,9 +121,9 @@ class AlbumDetailsPage extends StatelessWidget {
       _albumDetails.genres.forEach((genre) {
         genres.add(genre?.name ?? "");
       });
-      return genres.join(" / ");
+      return genres.join(Constants.slashSeparator);
     } else {
-      return "-";
+      return Constants.emptyData;
     }
   }
 
@@ -155,7 +154,9 @@ class AlbumDetailsPage extends StatelessWidget {
           Navigator.pop(context);
         },
         child: Container(
-          margin: EdgeInsets.only(top: _appThemeState.getResponsiveHeight(60),right: _appThemeState.getResponsiveWidth(40)),
+          margin: EdgeInsets.only(
+              top: _appThemeState.getResponsiveHeight(60),
+              right: _appThemeState.getResponsiveWidth(40)),
           width: _appThemeState.getResponsiveWidth(100),
           height: _appThemeState.getResponsiveHeight(100),
           child: Icon(
